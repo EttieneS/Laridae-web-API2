@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using Laeridae_API.Models;
+using System.Net.Http;
 
 namespace Laeridae_API.Controllers
 {
@@ -31,7 +32,9 @@ namespace Laeridae_API.Controllers
                 context.Teachers.Add(new Teachers()
                 {
                     Name = jsonResult.Name,
-                    Date = jsonResult.Date
+                    Date = jsonResult.Date,
+                    Active = jsonResult.Active,
+                    Salary = jsonResult.Salary
                 });   
 
                 context.SaveChanges();
@@ -69,7 +72,7 @@ namespace Laeridae_API.Controllers
 
         [System.Web.Http.AcceptVerbs("PUT")]
         [System.Web.Http.HttpPut]
-        public IHttpActionResult EditTeacher(Teachers teacher)
+        public HttpResponseMessage EditTeacher(Teachers teacher)
         {
             using (var context = new SchoolDBContext())
             {
@@ -79,10 +82,17 @@ namespace Laeridae_API.Controllers
                 originalTeacher.Name = teacher.Name;
                 originalTeacher.Date = teacher.Date;
                 originalTeacher.Active = teacher.Active;
+                originalTeacher.Salary = teacher.Salary;
 
                 context.SaveChanges();
             }
-            return Redirect(new Uri("https://localhost:44376/Teachers/Index", UriKind.RelativeOrAbsolute));
+            var newUrl = this.Url.Link("Default", new
+            {
+                Controller = "Teachers",
+                Action = "Index"
+            });
+            return Request.CreateResponse(HttpStatusCode.OK,
+                      new { Success = true, RedirectUrl = "https://localhost:44376/Teachers" });
         }
 
     }

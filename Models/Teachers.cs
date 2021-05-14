@@ -13,6 +13,7 @@ namespace Laeridae_API.Models
         public string Name { get; set; }
         public string Date { get; set; }
         public int? Active { get; set; }
+        public double? Salary { get; set; }
         
     }
 }
