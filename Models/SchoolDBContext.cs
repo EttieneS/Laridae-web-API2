@@ -9,5 +9,6 @@ namespace Laeridae_API.Models
     public class SchoolDBContext : DbContext
     {
         public DbSet<Teachers> Teachers { get; set; }
+        public DbSet<Students> Students { get; set; }
     }
 }
