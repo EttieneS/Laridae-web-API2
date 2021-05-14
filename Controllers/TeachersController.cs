@@ -36,6 +36,7 @@ namespace Laeridae_API.Controllers
 
                 context.SaveChanges();
             }
+            //todo redirect or success??
             return StatusCode(HttpStatusCode.OK);
         }
 
@@ -66,9 +67,8 @@ namespace Laeridae_API.Controllers
             return null;
         }
 
-        [System.Web.Http.AcceptVerbs("POST")]
-        [System.Web.Http.HttpPost]
-        //[EnableCors(origins: "https:localhost:44367", headers: "*", methods:"*")]
+        [System.Web.Http.AcceptVerbs("PUT")]
+        [System.Web.Http.HttpPut]
         public IHttpActionResult EditTeacher(Teachers teacher)
         {
             using (var context = new SchoolDBContext())
@@ -77,7 +77,9 @@ namespace Laeridae_API.Controllers
                    .Where(t => t.Id == teacher.Id)
                    .FirstOrDefault();
                 originalTeacher.Name = teacher.Name;
-               
+                originalTeacher.Date = teacher.Date;
+                originalTeacher.Active = teacher.Active;
+
                 context.SaveChanges();
             }
             return Redirect(new Uri("https://localhost:44376/Teachers/Index", UriKind.RelativeOrAbsolute));
