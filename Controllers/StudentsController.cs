@@ -31,7 +31,10 @@ namespace Laeridae_API.Controllers
             {
                 context.Students.Add(new Students()
                 {
-                    Name = student.Name
+                    Name = student.Name,
+                    Date = student.Date,
+                    TeacherFK = student.TeacherFK
+
                 });
 
                 context.SaveChanges();
@@ -77,12 +80,33 @@ namespace Laeridae_API.Controllers
                    .Where(t => t.Id == student.Id)
                    .FirstOrDefault();
                 originalStudent.Name = student.Name;
+                originalStudent.Date = student.Date;
+                originalStudent.TeacherFK = student.TeacherFK;
                 
                 context.SaveChanges();
             }
             
             return Request.CreateResponse(HttpStatusCode.OK,
-                      new { Success = true, RedirectUrl = "https://localhost:44376/Students" });
+                      new { RedirectUrl = "https://localhost:44376/Students" });
+        }
+
+        [System.Web.Http.HttpGet]
+        public async Task<IHttpActionResult> GetStudentTeacher()
+        {
+            using (SchoolDBContext context = new SchoolDBContext())
+            {
+                var StudentTeacher = (from s in context.Students
+                                      join t in context.Teachers on s.TeacherFK equals t.Id
+                                      select new
+                                      {
+                                          Id = s.Id,
+                                          Name = s.Name,
+                                          Date = s.Date,
+                                          TeacherId = t.Id,
+                                          TeacherName = t.Name
+                                      });
+                return Json(await StudentTeacher.ToListAsync());
+            }
         }
 
     }
