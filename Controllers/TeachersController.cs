@@ -95,5 +95,7 @@ namespace Laeridae_API.Controllers
                       new { Success = true, RedirectUrl = "https://localhost:44376/Teachers" });
         }
 
+       
+
     }
 }

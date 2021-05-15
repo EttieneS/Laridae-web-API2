@@ -12,6 +12,7 @@ using System.Net.Http;
 namespace Laeridae_API.Controllers
 {
     [EnableCors(origins: "https://localhost:44376", headers: "*", methods: "*")]
+    [RoutePrefix("api/students")]
     public class StudentsController : ApiController
     {
         [System.Web.Http.HttpGet]
@@ -23,7 +24,7 @@ namespace Laeridae_API.Controllers
             }
         }
 
-        [System.Web.Http.AcceptVerbs("POST")]
+        
         [System.Web.Http.HttpPost]
         public HttpResponseMessage CreateStudent(Students student)
         {
@@ -70,7 +71,7 @@ namespace Laeridae_API.Controllers
             return null;
         }
 
-        [System.Web.Http.AcceptVerbs("PUT")]
+        [AcceptVerbs("PUT")]
         [System.Web.Http.HttpPut]
         public HttpResponseMessage EditStudent(Students student)
         {
@@ -82,16 +83,18 @@ namespace Laeridae_API.Controllers
                 originalStudent.Name = student.Name;
                 originalStudent.Date = student.Date;
                 originalStudent.TeacherFK = student.TeacherFK;
-                
+
                 context.SaveChanges();
             }
-            
+
             return Request.CreateResponse(HttpStatusCode.OK,
                       new { RedirectUrl = "https://localhost:44376/Students" });
         }
 
-        [System.Web.Http.HttpGet]
-        public async Task<IHttpActionResult> GetStudentTeacher()
+        [HttpGet]
+        [Route("")]
+        [Route("jointeacher")]
+        public async Task<IHttpActionResult> GetStudentWithTeacher()
         {
             using (SchoolDBContext context = new SchoolDBContext())
             {
@@ -109,5 +112,16 @@ namespace Laeridae_API.Controllers
             }
         }
 
+        //[HttpGet]
+        [Route("teacher/{Id}")]
+        public async Task<IHttpActionResult> GetStudentsByTeacher(int Id)
+        {
+            using (SchoolDBContext context = new SchoolDBContext())
+            {
+                var StudentTeacher = (context.Students
+                                      .Where(s => s.TeacherFK == Id));
+                return Json(await StudentTeacher.ToListAsync());
+            }
+        }
     }
 }

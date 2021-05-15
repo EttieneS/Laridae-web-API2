@@ -12,6 +12,6 @@ namespace Laeridae_API.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Date { get; set; }
-        public int TeacherFK { get; set; }
+        public int? TeacherFK { get; set; }
     }
 }
